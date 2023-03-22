@@ -1,0 +1,78 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+$background-color1: #73c8a9;
+$background-color2: #373b44;
+$border-color: #2e2e2e;
+$letter-color: #fff;
+$hover-color: #333;
+$font-family: "Press Start 2P", cursive;
+
+body {
+  background-color: $background-color1;
+  font-family: $font-family;
+  background-image: linear-gradient(
+    to right,
+    $background-color1,
+    $background-color2
+  );
+
+  #end-menu {
+    /* We will toggle then the display of the end-menu */
+    display: none;
+    margin: 50px auto;
+    width: 200px;
+    padding: 20px;
+    text-align: center;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 50%);
+
+    button {
+      background-color: $border-color;
+      border: none;
+      border-radius: 5px;
+      color: $letter-color;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 12px 27px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.25s ease;
+
+      &:hover {
+        background-color: $hover-color;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  #game-container {
+    canvas {
+      border: 5px solid $border-color;
+      border-radius: 10px;
+      display: block;
+      margin: 50px auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background-image: url("../assets/bg.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+
+      /* We will make the end menu overlap the game canvas, so we need here a lower z-index */
+      z-index: 1;
+    }
+
+    #score-display {
+      color: $letter-color;
+      font-size: 2rem;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .backdrop-blur {
+      backdrop-filter: blur(5px);
+    }
+  }
+}
