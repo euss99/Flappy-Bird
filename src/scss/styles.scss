@@ -29,20 +29,21 @@ body {
     position: absolute;
     left: 50%;
     transform: translate(-50%, 50%);
+    z-index: 1000;
 
     button {
-      background-color: $border-color;
+      background-color: #2e2e2e;
       border: none;
       border-radius: 5px;
-      color: $letter-color;
+      color: #fff;
       cursor: pointer;
-      font-size: 1rem;
-      padding: 12px 27px;
+      font-size: 1em;
+      padding: 15px 30px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       transition: all 0.25s ease;
 
       &:hover {
-        background-color: $hover-color;
+        background-color: #333;
         transform: translateY(-2px);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
@@ -65,14 +66,14 @@ body {
     }
 
     #score-display {
-      color: $letter-color;
-      font-size: 2rem;
+      color: #fff;
+      font-size: 2em;
       text-align: center;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .backdrop-blur {
-      backdrop-filter: blur(5px);
+      filter: blur(5px);
     }
   }
 }

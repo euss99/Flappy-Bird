@@ -7,12 +7,6 @@ const gameContainer = document.getElementById(
 ) as HTMLDivElement;
 
 const flappyImg = new Image();
-flappyImg.onload = function () {
-  // call loop() once the image has loaded
-  console.log("Se hizo el load");
-
-  loop();
-};
 flappyImg.src = "https://i.imgur.com/w79JtQ1.png";
 
 // Game constants
@@ -37,14 +31,51 @@ let scoreDiv = document.getElementById("score-display") as HTMLDivElement;
 let score: number = 0;
 let highScore: number = 0;
 
-document.body.onkeyup = function (e: KeyboardEvent): void {
-  if (e.code === "Space") {
-    birdVelocity = FLAP_SPEED;
-  }
-};
+// we add a bool variable, so we can check when flappy passes we increase
+// the value
+let scored = false;
 
-/* CAMBIAR A TS */
-function collisionCheck() {
+// Declares a variable indicating whether the game has ended
+let gameOver = false;
+
+document.body.onkeyup = function(e) {
+  if (!gameOver && e.code == 'Space') {
+      birdVelocity = FLAP_SPEED;
+  } else if (gameOver && e.code == 'Space') {
+      hideEndMenu();
+      resetGame();
+      loop();
+      gameOver = false;
+  }
+}
+
+document
+  .getElementById("restart-button")!
+  .addEventListener("click", function () {
+    hideEndMenu();
+    resetGame();
+    loop();
+  });
+
+function increaseScore(): void {
+  // increase now our counter when our flappy passes the pipes
+  if (
+    birdX > pipeX + PIPE_WIDTH &&
+    (birdY < pipeY + PIPE_GAP || birdY + BIRD_HEIGHT > pipeY + PIPE_GAP) &&
+    !scored
+  ) {
+    score++;
+    scoreDiv.innerHTML = score.toString();
+    scored = true;
+  }
+
+  // reset the flag, if bird passes the pipes
+  if (birdX < pipeX + PIPE_WIDTH) {
+    scored = false;
+  }
+}
+
+function collisionCheck(): boolean {
   // Create bounding Boxes for the bird and the pipes
 
   const birdBox = {
@@ -95,10 +126,8 @@ function collisionCheck() {
 }
 
 function hideEndMenu(): void {
-  const endMenu = document.getElementById("end-menu");
-  if (endMenu) {
-    endMenu.style.display = "none";
-  }
+  const endMenu = document.getElementById("end-menu") as HTMLElement;
+  endMenu.style.display = "none";
   gameContainer.classList.remove("backdrop-blur");
 }
 
@@ -114,43 +143,75 @@ function showEndMenu(): void {
   if (endScore) {
     endScore.innerHTML = score.toString();
   }
+
+  // This way we update always our highscore at the end of our game
+  // if we have a higher high score than the previous
+  if (highScore < score) {
+    highScore = score;
+  }
+
+  const bestScore = document.getElementById("best-score");
+  if (bestScore) {
+    bestScore.innerHTML = highScore.toString();
+  }
 }
 
-function endGame() {
-  alert("Loose");
+// We reset the values to the beginning so we start with the bird at the beginning
+function resetGame(): void {
+  birdX = 50;
+  birdY = 50;
+  birdVelocity = 0;
+  birdAcceleration = 0.1;
+
+  pipeX = 400;
+  pipeY = canvas.height - 200;
+
+  score = 0;
+}
+
+function endGame(): void {
+  if (!gameOver) {
+    showEndMenu();
+    gameOver = true;
+}
 }
 
 function loop(): void {
   // reset the ctx after every loop iteration
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // draw the bird
+  // Draw Flappy Bird
   ctx.drawImage(flappyImg, birdX, birdY);
 
-  // draw the pipe
+  // Draw Pipes
   ctx.fillStyle = "#333";
   ctx.fillRect(pipeX, -100, PIPE_WIDTH, pipeY);
   ctx.fillRect(pipeX, pipeY + PIPE_GAP, PIPE_WIDTH, canvas.height - pipeY);
 
-  // now we need to add an collision check to display our end-menu
+  // now we would need to add an collision check to display our end-menu
   // and end the game
-  // the collisionCheck will return us true if we hace a collision
+  // the collisionCheck will return us true if we have a collision
   // otherwise false
   if (collisionCheck()) {
     endGame();
     return;
   }
 
-  // forgot to move the pipe
+  // forgot to move the pipes
   pipeX -= 1.5;
-  // If the pipe moves out of the frame we need to reset the pipe
+  // if the pipe moves out of the frame we need to reset the pipe
   if (pipeX < -50) {
     pipeX = 400;
     pipeY = Math.random() * (canvas.height - PIPE_GAP) + PIPE_WIDTH;
   }
 
+  // apply gravity to the bird and let it move
   birdVelocity += birdAcceleration;
   birdY += birdVelocity;
 
+  // always check if you call the function ...
+  increaseScore();
   requestAnimationFrame(loop);
 }
+
+loop();
