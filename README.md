@@ -50,3 +50,7 @@ npm run build
 ## Contribuir
 
 Si deseas contribuir con este proyecto, por favor crea un pull request con tus cambios. Estaré encantado de revisarlo y fusionarlo en el proyecto si es apropiado.
+
+## Autor
+
+El autor de este proyecto es Efraín Uriel Solís Salinas y puede ser contactado por correo electrónico a <euss99@hotmail.com>.
